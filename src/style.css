@@ -1,0 +1,17 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background: #E2E8F0;
+}
+
+.nav-title{
+    margin-left: 5px;
+}
+
+@media only screen and (max-width: 600px) {
+    .nav-title{
+        display: none;
+    }   
+}
