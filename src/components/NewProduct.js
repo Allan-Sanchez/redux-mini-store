@@ -54,7 +54,7 @@ const NewProduct = () => {
                 color="primary"
                 fullWidth
               >
-                Primary
+                Add product
               </Button>
             </Box>
           </Card>

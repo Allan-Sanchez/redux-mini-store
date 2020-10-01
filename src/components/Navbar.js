@@ -48,7 +48,7 @@ export default function ButtonAppBar() {
               </span>
             </RouterLink>
           </Typography>
-          <RouterLink to="./product/new">
+          <RouterLink to="/product/new">
             <Button color="secondary" variant="contained">
               Add Product
             </Button>
