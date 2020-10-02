@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,13 +8,16 @@ import {
   TableCell,
   TableBody,
   Grid,
-  IconButton,
+  CircularProgress,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import ErrorSnack from "./ErrorSnack";
+
+import ListProduct from "./ListProduct";
 
 import { withStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
+
+import { useSelector, useDispatch } from "react-redux";
+import { getProductAction } from "../actions/ProductActions";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -27,6 +30,17 @@ const StyledTableCell = withStyles((theme) => ({
 }))(TableCell);
 
 const Products = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getProduct = () => dispatch(getProductAction());
+    getProduct();
+  }, []);
+
+  const products = useSelector((state) => state.products.products);
+  const errorMessage = useSelector((state) => state.products.error);
+  const spinner = useSelector((state) => state.products.loading);
+  // console.log(products);
   return (
     <Fragment>
       <Box mb={8} mt={5} display="flex" justifyContent="center">
@@ -35,53 +49,38 @@ const Products = () => {
         </Typography>
       </Box>
 
-      <Grid container justify="center">
-        <Grid item md={8}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Product Name</StyledTableCell>
-                <StyledTableCell align="right">Price</StyledTableCell>
-                <StyledTableCell align="right">Accion</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell omponent="th" scope="row">
-                  Computer
-                </TableCell>
-                <TableCell align="right">$ 200.00</TableCell>
-                <TableCell align="right">
-                  <RouterLink to="/product/edit/1">
-                    <IconButton aria-label="edit" color="primary">
-                      <EditIcon />
-                    </IconButton>
-                  </RouterLink>
-                  <IconButton aria-label="delete" color="secondary">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-
-              {/* temporally */}
-              <TableRow>
-                <TableCell omponent="th" scope="row">
-                  Computer
-                </TableCell>
-                <TableCell align="right">$ 200.00</TableCell>
-                <TableCell align="right">
-                  <IconButton aria-label="edit" color="primary">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton aria-label="delete" color="secondary">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+      {errorMessage ? (
+        <ErrorSnack message="Error: Products not found, try again" />
+      ) : null}
+      {spinner ? (
+        <Box display="flex" justifyContent="center">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Grid container justify="center">
+          <Grid item md={8}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>Product Name</StyledTableCell>
+                  <StyledTableCell align="right">Price</StyledTableCell>
+                  <StyledTableCell align="right">Accion</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {products.lenght === 0
+                  ? "product not fount"
+                  : products.map((product) => (
+                      <ListProduct
+                        product={product}
+                        key={product.id}
+                      ></ListProduct>
+                    ))}
+              </TableBody>
+            </Table>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Fragment>
   );
 };
