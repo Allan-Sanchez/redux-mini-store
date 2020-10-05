@@ -35,6 +35,7 @@ const Products = () => {
   useEffect(() => {
     const getProduct = () => dispatch(getProductAction());
     getProduct();
+    //eslint-disable-next-line
   }, []);
 
   const products = useSelector((state) => state.products.products);
@@ -50,7 +51,7 @@ const Products = () => {
       </Box>
 
       {errorMessage ? (
-        <ErrorSnack message="Error: Products not found, try again" />
+        <ErrorSnack message="Error: Products not found, try again"  typeAlert="error"/>
       ) : null}
       {spinner ? (
         <Box display="flex" justifyContent="center">

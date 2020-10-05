@@ -6,7 +6,7 @@ function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
 
-export default function SimpleSnackbar({message}) {
+export default function SimpleSnackbar({message,typeAlert}) {
   
   return (
     <div>
@@ -16,7 +16,7 @@ export default function SimpleSnackbar({message}) {
         }}
         open={true}
         >
-      <Alert severity="error">{message}</Alert>
+      <Alert severity={typeAlert}>{message}</Alert>
       </Snackbar>
     </div>
   );

@@ -3,12 +3,17 @@
     {
       "id": 1,
       "name": "Jugo de Zanahoria",
-      "price": "31111"
+      "price": "311"
     },
     {
       "name": "Jugo de Naranja",
       "price": "300",
       "id": 3
+    },
+    {
+      "name": "testing",
+      "price": 45,
+      "id": 4
     }
   ]
 }

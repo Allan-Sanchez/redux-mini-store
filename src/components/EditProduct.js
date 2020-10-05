@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
 import {
   Card,
@@ -13,26 +13,62 @@ import {
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateProductAction } from "../actions/ProductActions";
+import {showAlertAction,closeAlertAction} from "../actions/AlertActions";
+import ErrorSnack from "./ErrorSnack";
+import {useHistory } from 'react-router-dom';
 
 const EditProduct = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("xs"), {
     defaultMatches: true,
   });
+  const history = useHistory();
+  const [product, setProduct] = useState({
+    name:'',
+    price:''
+  })
 
   const dispatch = useDispatch();
   const currentProduct = useSelector((state) => state.products.productEdit);
-  if (!currentProduct) return null;
-  const { name, price } = currentProduct;
+  const alertShow = useSelector( (state) =>state.alert.alert);
+
+  useEffect(() => {
+    setProduct(currentProduct);
+  }, [currentProduct])
+  // if (!currentProduct) return null;
+  const { name, price } = product;
+
+  const onChangeProuct = (e) =>{
+    setProduct({
+      ...product,
+      [e.target.name] : e.target.value
+    })
+  }
 
   const handleUpdateProduct = (e) => {
     e.preventDefault();
-
+    if(name.trim() === '' || price <= 0){
+      let alert = {
+        message: "all the input are required",
+        typeAlert: "error",
+      };
+      dispatch(showAlertAction(alert));
+      return;
+    }
+    dispatch( updateProductAction(product));
+    dispatch( closeAlertAction());
+    history.push('/');
   };
   return (
     <Grid container justify="center">
       <Grid item>
         <Box mt={5}>
+        {alertShow ? (
+        <ErrorSnack
+          message={alertShow.message}
+          typeAlert={alertShow.typeAlert}
+        />
+      ) : null}
           <Card>
             <form onSubmit={handleUpdateProduct}>
               <CardContent>
@@ -43,9 +79,9 @@ const EditProduct = () => {
                   <Box mb={2}>
                     <TextField
                       id="productName"
-                      name="productName"
+                      name="name"
                       label="Product Name"
-                      value={name}
+                      value={name} onChange={onChangeProuct}
                       fullWidth
                     />
                   </Box>
@@ -53,9 +89,9 @@ const EditProduct = () => {
                     <TextField
                       type="number"
                       id="productPrice"
-                      name="productPrice"
+                      name="price"
                       label="Product Price"
-                      value={price}
+                      value={price} onChange={onChangeProuct}
                       fullWidth
                     />
                   </Box>

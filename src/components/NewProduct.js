@@ -15,6 +15,7 @@ import ErrorSnack from "./ErrorSnack";
 
 import { useDispatch, useSelector } from "react-redux";
 import { newProducActions } from "../actions/ProductActions";
+import { showAlertAction, closeAlertAction } from "../actions/AlertActions";
 
 const NewProduct = ({ history }) => {
   const theme = useTheme();
@@ -29,6 +30,7 @@ const NewProduct = ({ history }) => {
 
   const errorMessage = useSelector((state) => state.products.error);
   const spinner = useSelector((state) => state.products.loading);
+  const alertShow = useSelector((state) => state.alert.alert);
 
   const addProduct = (product) => dispatch(newProducActions(product));
 
@@ -36,18 +38,33 @@ const NewProduct = ({ history }) => {
     e.preventDefault();
 
     if (name.trim() === "" || price <= 0) {
+      let alert = {
+        message: "all the input are required",
+        typeAlert: "error",
+      };
+      dispatch(showAlertAction(alert));
       return;
     }
     addProduct({ name, price });
+    dispatch(closeAlertAction());
     setName("");
     setPrice("");
-    history.push('/');
+    history.push("/");
   };
 
   return (
     <Grid container justify="center">
       {errorMessage ? (
-        <ErrorSnack message="Error: Product could not be saved" />
+        <ErrorSnack
+          message="Error: Product could not be saved"
+          typeAlert="error"
+        />
+      ) : null}
+      {alertShow ? (
+        <ErrorSnack
+          message={alertShow.message}
+          typeAlert={alertShow.typeAlert}
+        />
       ) : null}
       {spinner ? <CircularProgress /> : null}
       <Grid item>

@@ -128,10 +128,12 @@ export function updateProductAction(product) {
     dispatch(updateProduct(product));
 
     try {
-      const response = await clientAxios.put(`/products/${product.id}`,product);
-      console.log(response)
+      await clientAxios.put(`/products/${product.id}`,product);
+      // console.log(response)
+      dispatch(updateProductSuccess(product));
     } catch (error) {
       console.log(error)
+      dispatch( updateProductError());
     }
 
   }
@@ -141,3 +143,12 @@ const updateProduct = (product) =>({
   type:UPDATE_PRODUCT,
   payload:product
 })
+
+const updateProductSuccess = (product) =>({
+  type: UPDATE_PRODUCT_SUCCESS,
+  payload:product
+})
+const updateProductError = () =>({
+  type:UPDATE_PRODUCT_ERROR,
+  payload:true
+});
